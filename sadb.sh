@@ -5,14 +5,6 @@
 # Last edited:  October 13, 2022
 
 
-# Usage:
-# sadb install your_app.apk
-# sadb display
-# sadb uninstall your.package.name
-# sadb screenshot
-# sadb scrcpy
-
-
 # Get all connected device names
 DEVICES=($(adb devices | sed '1d' | sed '$d' | sed 's/\t.*//'))
 ADBWIFIPORT=5555
