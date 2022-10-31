@@ -21,6 +21,8 @@
 - `sadb screenshot [IMAGE_NAME.png]` - Screenshot on one device and save to current directory
   - *Screenshot file is named `screenshot.png` if no name is specified.*
 - `sadb scrcpy` - Start `scrcpy` on a selected device
+- `sadb pull [PATH_TO_FILE] [NAME]` - Pull specified file to current directory
+  - *File name is left alone if no name is specified.*
 
 ## Add to your bash profile
 ```
