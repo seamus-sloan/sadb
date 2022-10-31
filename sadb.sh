@@ -19,7 +19,7 @@ function install() {
     selectDevice true
 
     # Install the apk on the device (or devices)
-    if [ ${#USERSELECTION[@]} > 1 ]
+    if [[ ${#USERSELECTION[@]} > 1 ]]
     then
         for device in "${USERSELECTION[@]}"
         do
@@ -46,7 +46,7 @@ function uninstall() {
     selectDevice
 
     # Uninstall the package on the device (or devices)
-    if [ ${#USERSELECTION[@]} > 1 ]
+    if [[ ${#USERSELECTION[@]} > 1 ]]
     then
         for device in "${USERSELECTION[@]}"
         do
@@ -73,7 +73,7 @@ function stop() {
     selectDevice
 
     # Install the apk on the device (or devices)
-    if [ ${#USERSELECTION[@]} > 1 ]
+    if [[ ${#USERSELECTION[@]} > 1 ]]
     then
         for device in "${USERSELECTION[@]}"
         do
@@ -101,7 +101,7 @@ function start() {
     selectDevice
 
     # Install the apk on the device (or devices)
-    if [ ${#USERSELECTION[@]} > 1 ]
+    if [[ ${#USERSELECTION[@]} > 1 ]]
     then
         for device in "${USERSELECTION[@]}"
         do
@@ -173,7 +173,7 @@ function record() {
 function record_pull() {
     printf '\n'
     read -p "Download the screenrecording to the current directory? (y\n): " selection
-    if [ ${selection} == "y" ]
+    if [[ ${selection} == "y" ]]
     then
         printf "\nDownloading screen recording from ${USERSELECTION}...\n"
         record_pull_command=$(adb -s ${USERSELECTION} pull sdcard/video.mp4)
@@ -224,7 +224,7 @@ function pull() {
 
 function selectDevice(){
     # If the user only has one device connected
-    if [ ${#DEVICES[@]} == 1 ]
+    if [[ ${#DEVICES[@]} == 1 ]]
     then
         USERSELECTION=${DEVICES[0]}
     else
@@ -239,7 +239,7 @@ function selectDevice(){
 
         # If the user is performing an action that can be
         # done on multiple devices (install/uninstall)
-        if [ -n ${ALLOPTION} ]
+        if [[ -n ${ALLOPTION} ]]
         then
             printf "  [${count}] - ALL DEVICES\n"
         else
@@ -250,7 +250,7 @@ function selectDevice(){
         read -p "Device [0 - $count]: " selection
 
         # Save user's selection
-        if [ ${selection} == ${count} && -n ${ALLOPTION} ]
+        if [[ ${selection} == ${count} && -n ${ALLOPTION} ]]
         then
             USERSELECTION=(${DEVICES[@]})
         else
@@ -328,7 +328,7 @@ case $1 in
         adbwifi;;
 
     install)
-        if [ $# != 2 ]
+        if [[ $# != 2 ]]
         then
             printf '`install` requires an APK to be specified.\n'
             help
@@ -339,7 +339,7 @@ case $1 in
         fi;;
 
     uninstall)
-        if [ $# != 2 ]
+        if [[ $# != 2 ]]
         then
             printf '`uninstall` requires a package to be specified.\n'
             help
@@ -350,7 +350,7 @@ case $1 in
         fi;;
 
     stop)
-        if [ $# != 2 ]
+        if [[ $# != 2 ]]
         then
             printf '`stop` requires a package to be specified.\n'
             help
@@ -361,7 +361,7 @@ case $1 in
         fi;;
 
     start)
-        if [ $# != 2 ]
+        if [[ $# != 2 ]]
         then
             printf '`stop` requires a package to be specified.\n'
             help
@@ -373,14 +373,14 @@ case $1 in
 
     record)
         record
-        if [ $# == 2 ]
+        if [[ $# == 2 ]]
         then
             mv -v video.mp4 $2
         fi;;
 
     screenshot)
         screenshot
-        if [ $# == 2 ]
+        if [[ $# == 2 ]]
         then
             mv -v screenshot.png $2
         fi;;
@@ -390,7 +390,7 @@ case $1 in
         exit;;
 
     pull)
-        if [ "$#" -ge 2 ] && [ "$#" -lt 4 ]
+        if [[ "$#" -ge 2 ]] && [[ "$#" -lt 4 ]]
         then
             path=$2
             name=$3
