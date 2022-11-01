@@ -221,6 +221,32 @@ function pull() {
 
 
 
+#region Clear Storage for Package
+function clear() {
+    selectDevice true
+
+    # Install the apk on the device (or devices)
+    if [[ ${#USERSELECTION[@]} > 1 ]]
+    then
+        for device in "${USERSELECTION[@]}"
+        do
+            clear_package_storage ${device} ${package}
+        done
+    else
+        device=${USERSELECTION}
+        clear_package_storage ${device} ${package}
+    fi
+}
+
+function clear_package_storage() {
+    printf "Clearing storage for ${package} on ${device}...\n"
+    installation_command=$(adb -s ${device} shell pm clear ${package})
+}
+#endregion
+
+
+
+
 
 function selectDevice(){
     # If the user only has one device connected
@@ -388,6 +414,17 @@ case $1 in
     scrcpy)
         screencopy
         exit;;
+
+    clear)
+        if [[ $# != 2 ]]
+        then
+            printf '`clear` requires a package to be specified.\n'
+            help
+        else
+            ALLOPTION=true
+            package=$2
+            clear $package
+        fi;;
 
     pull)
         if [[ "$#" -ge 2 ]] && [[ "$#" -lt 4 ]]
