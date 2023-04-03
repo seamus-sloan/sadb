@@ -16,7 +16,7 @@ USERSELECTION=""
 
 #region Install APK
 function install() {
-    selectDevice true
+    selectDevice
 
     # Install the apk on the device (or devices)
     if [[ ${#USERSELECTION[@]} > 1 ]]
@@ -131,7 +131,7 @@ function adbwifi() {
     sleep 5
 
     # Select the device to connect over WiFi
-    selectDevice true
+    selectDevice
 
     # Get the IP Address of the device
     device=${USERSELECTION}
@@ -213,8 +213,18 @@ function devices() {
 
 
 function pull() {
-    selectDevice true
-    command=$(adb -s ${device} pull ${path} ${name})
+    selectDevice
+    command=$(adb -s ${USERSELECTION} pull ${path} ${name})
+}
+
+
+
+
+
+function ip() {
+    selectDevice
+    device=${USERSELECTION}
+    getDeviceIp ${device}
 }
 
 
@@ -223,7 +233,7 @@ function pull() {
 
 #region Clear Storage for Package
 function clear() {
-    selectDevice true
+    selectDevice
 
     # Install the apk on the device (or devices)
     if [[ ${#USERSELECTION[@]} > 1 ]]
@@ -310,6 +320,7 @@ function help(){
     printf ' sadb stop [YOUR.PACKAGE.NAME]\n'
     printf ' sadb start [YOUR.PACKAGE.NAME]\n'
     printf ' sadb wifi\n'
+    printf ' sadb ip\n'
     printf '\n'
 }
 
@@ -436,6 +447,8 @@ case $1 in
             printf '`pull` requires a file path to be specified.\n'
             help
         fi;;
+    ip)
+        ip;;
 
     *)
         help;;
