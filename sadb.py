@@ -136,6 +136,12 @@ def wifi(device):
         print(f"Connected to {device} via WiFi")
 
 
+def search(device, search_term):
+    cmd = ["adb", "-s", device, "shell", "pm",
+           "list", "packages", "|", "grep", search_term]
+    subprocess.run(cmd)
+
+
 def parse_args():
     parser = argparse.ArgumentParser(
         description="A wrapper for adb on multiple devices")
@@ -189,6 +195,12 @@ def parse_args():
     # WiFi
     wifi_parser = subparsers.add_parser(
         "wifi", help="Connect to a device via WiFi")
+
+    # Search
+    search_parser = subparsers.add_parser(
+        "search", help="Search for an installed package")
+    search_parser.add_argument(
+        "search_term", help="The name of the package to search for")
 
     # R (Unwrapped)
     r_parser = subparsers.add_parser("r", help="Run an adb command")
@@ -273,6 +285,12 @@ def main():
             if device is None:
                 return
             wifi(device)
+
+        elif args.command == "search":
+            device = select_device(devices)
+            if device is None:
+                return
+            search(device, args.search_term)
 
         elif args.command == "r":
             device = select_device(devices)
