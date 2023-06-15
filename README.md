@@ -5,7 +5,7 @@
 
 Whether you're running `adb install com.example.app` over and over again on multiple different connected devices or if you're just too lazy to type in `adb shell pm packages list | grep some.package.name`, `sadb` makes those commands runnable on multiple devices and defines some "aliases" to make those commands easier for you.
 
-- Can't remember how to see your device's IP address ad don't want to go through wifi settings? 
+- Can't remember how to see your device's IP address and don't want to go through wifi settings? 
   - `sadb ip`
 - Trying to connect over wifi but you can't remember the commands? 
   - `sadb wifi`
