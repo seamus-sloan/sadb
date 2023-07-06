@@ -45,6 +45,14 @@ def select_device(devices, allow_all=False):
             print("Invalid choice")
 
 
+def call_function_on_devices(selected_devices, func, *args):
+    if isinstance(selected_devices, list):
+        for device in selected_devices:
+            func(device, *args)
+    else:
+        func(selected_devices, *args)
+
+
 def stop(device, package_name):
     cmd = ["adb", "-s", device, "shell", "am", "force-stop", package_name]
     subprocess.run(cmd)
@@ -230,51 +238,36 @@ def main():
             selected_devices = select_device(devices, allow_all=True)
             if selected_devices is None:
                 return
-            if isinstance(selected_devices, list):
-                for device in selected_devices:
-                    uninstall(device, args.package_name)
-            for device in selected_devices:
-                stop(device, args.package_name)
+            call_function_on_devices(
+                selected_devices, stop, args.package_name)
 
         elif args.command == "start":
             selected_devices = select_device(devices, allow_all=True)
             if selected_devices is None:
                 return
-            if isinstance(selected_devices, list):
-                for device in selected_devices:
-                    uninstall(device, args.package_name)
-            for device in selected_devices:
-                start(device, args.package_name)
+            call_function_on_devices(
+                selected_devices, start, args.package_name)
 
         elif args.command == "clear":
             selected_devices = select_device(devices, allow_all=True)
             if selected_devices is None:
                 return
-            if isinstance(selected_devices, list):
-                for device in selected_devices:
-                    uninstall(device, args.package_name)
-            for device in selected_devices:
-                clear(device, args.package_name)
+            call_function_on_devices(
+                selected_devices, clear, args.package_name)
 
         elif args.command == "install":
             selected_devices = select_device(devices, allow_all=True)
             if selected_devices is None:
                 return
-            if isinstance(selected_devices, list):
-                for device in selected_devices:
-                    uninstall(device, args.package_name)
-            for device in selected_devices:
-                install(device, args.apk)
+            call_function_on_devices(
+                selected_devices, install, args.apk)
 
         elif args.command == "uninstall":
             selected_devices = select_device(devices, allow_all=True)
             if selected_devices is None:
                 return
-            if isinstance(selected_devices, list):
-                for device in selected_devices:
-                    uninstall(device, args.package_name)
-            else:
-                uninstall(selected_devices, args.package_name)
+            call_function_on_devices(
+                selected_devices, uninstall, args.package_name)
 
         elif args.command == "scrcpy":
             device = select_device(devices)
