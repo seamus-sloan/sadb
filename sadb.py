@@ -1,8 +1,7 @@
 # Created by:   Seamus Sloan
-# Last Edited:  June 15, 2023
+# Last Edited:  July 6, 2023
 
 import argparse
-import os
 import sys
 import subprocess
 import time
@@ -16,11 +15,16 @@ def get_devices():
 
 
 def select_device(devices, allow_all=False):
+    # If there are no devices found...
     if len(devices) == 0:
         print("No devices found")
         return None
+
+    # If there is only one device found...
     if len(devices) == 1:
         return devices[0]
+
+    # If there are multiple devices found...
     print("Select a device:")
     for i, device in enumerate(devices):
         print(f"{i + 1}. {device}")
@@ -38,6 +42,14 @@ def select_device(devices, allow_all=False):
                 print("Invalid choice")
         except ValueError:
             print("Invalid choice")
+
+
+def call_function_on_devices(selected_devices, func, *args):
+    if isinstance(selected_devices, list):
+        for device in selected_devices:
+            func(device, *args)
+    else:
+        func(selected_devices, *args)
 
 
 def stop(device, package_name):
@@ -225,36 +237,36 @@ def main():
             selected_devices = select_device(devices, allow_all=True)
             if selected_devices is None:
                 return
-            for device in selected_devices:
-                stop(device, args.package_name)
+            call_function_on_devices(
+                selected_devices, stop, args.package_name)
 
         elif args.command == "start":
             selected_devices = select_device(devices, allow_all=True)
             if selected_devices is None:
                 return
-            for device in selected_devices:
-                start(device, args.package_name)
+            call_function_on_devices(
+                selected_devices, start, args.package_name)
 
         elif args.command == "clear":
             selected_devices = select_device(devices, allow_all=True)
             if selected_devices is None:
                 return
-            for device in selected_devices:
-                clear(device, args.package_name)
+            call_function_on_devices(
+                selected_devices, clear, args.package_name)
 
         elif args.command == "install":
             selected_devices = select_device(devices, allow_all=True)
             if selected_devices is None:
                 return
-            for device in selected_devices:
-                install(device, args.apk)
+            call_function_on_devices(
+                selected_devices, install, args.apk)
 
         elif args.command == "uninstall":
             selected_devices = select_device(devices, allow_all=True)
             if selected_devices is None:
                 return
-            for device in selected_devices:
-                uninstall(device, args.package_name)
+            call_function_on_devices(
+                selected_devices, uninstall, args.package_name)
 
         elif args.command == "scrcpy":
             device = select_device(devices)
