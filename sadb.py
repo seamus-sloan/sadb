@@ -16,11 +16,16 @@ def get_devices():
 
 
 def select_device(devices, allow_all=False):
+    # If there are no devices found...
     if len(devices) == 0:
         print("No devices found")
         return None
+
+    # If there is only one device found...
     if len(devices) == 1:
         return devices[0]
+
+    # If there are multiple devices found...
     print("Select a device:")
     for i, device in enumerate(devices):
         print(f"{i + 1}. {device}")
@@ -225,6 +230,9 @@ def main():
             selected_devices = select_device(devices, allow_all=True)
             if selected_devices is None:
                 return
+            if isinstance(selected_devices, list):
+                for device in selected_devices:
+                    uninstall(device, args.package_name)
             for device in selected_devices:
                 stop(device, args.package_name)
 
@@ -232,6 +240,9 @@ def main():
             selected_devices = select_device(devices, allow_all=True)
             if selected_devices is None:
                 return
+            if isinstance(selected_devices, list):
+                for device in selected_devices:
+                    uninstall(device, args.package_name)
             for device in selected_devices:
                 start(device, args.package_name)
 
@@ -239,6 +250,9 @@ def main():
             selected_devices = select_device(devices, allow_all=True)
             if selected_devices is None:
                 return
+            if isinstance(selected_devices, list):
+                for device in selected_devices:
+                    uninstall(device, args.package_name)
             for device in selected_devices:
                 clear(device, args.package_name)
 
@@ -246,6 +260,9 @@ def main():
             selected_devices = select_device(devices, allow_all=True)
             if selected_devices is None:
                 return
+            if isinstance(selected_devices, list):
+                for device in selected_devices:
+                    uninstall(device, args.package_name)
             for device in selected_devices:
                 install(device, args.apk)
 
@@ -253,8 +270,11 @@ def main():
             selected_devices = select_device(devices, allow_all=True)
             if selected_devices is None:
                 return
-            for device in selected_devices:
-                uninstall(device, args.package_name)
+            if isinstance(selected_devices, list):
+                for device in selected_devices:
+                    uninstall(device, args.package_name)
+            else:
+                uninstall(selected_devices, args.package_name)
 
         elif args.command == "scrcpy":
             device = select_device(devices)
