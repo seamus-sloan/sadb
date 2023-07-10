@@ -1,5 +1,7 @@
+#!/usr/bin/python3
+
 # Created by:   Seamus Sloan
-# Last Edited:  July 6, 2023
+# Last Edited:  July 10, 2023
 
 import argparse
 import sys
@@ -7,11 +9,15 @@ import subprocess
 import time
 
 
-def get_devices():
-    result = subprocess.run(["adb", "devices"], capture_output=True, text=True)
-    lines = result.stdout.strip().split("\n")[1:]
+def split_get_devices(result):
+    lines = result.strip().split("\n")[1:]
     devices = [line.split()[0] for line in lines]
     return devices
+
+
+def get_devices():
+    result = subprocess.run(["adb", "devices"], capture_output=True, text=True)
+    return split_get_devices(result.stdout)
 
 
 def select_device(devices, allow_all=False):
@@ -196,13 +202,15 @@ def parse_args():
     screenshot_parser = subparsers.add_parser(
         "screenshot", help="Take a screenshot of a device")
     screenshot_parser.add_argument(
-        "-f", "--filename", help="The name of the file to save the screenshot as (default: screenshot.png)")
+        "-f", "--filename", 
+        help="The name of the file to save the screenshot as (default: screenshot.png)")
 
     # Record
     record_parser = subparsers.add_parser(
         "record", help="Record the screen of a device (Press CTRL-C to stop recording)")
     record_parser.add_argument(
-        "-f", "--filename", help="The name of the file to save the screen recording as (default: video.mp4)")
+        "-f", "--filename", 
+        help="The name of the file to save the screen recording as (default: video.mp4)")
 
     # WiFi
     wifi_parser = subparsers.add_parser(
