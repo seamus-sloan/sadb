@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 # Created by:   Seamus Sloan
 # Last Edited:  July 6, 2023
 
@@ -7,11 +9,15 @@ import subprocess
 import time
 
 
-def get_devices():
-    result = subprocess.run(["adb", "devices"], capture_output=True, text=True)
-    lines = result.stdout.strip().split("\n")[1:]
+def split_get_devices(result):
+    lines = result.strip().split("\n")[1:]
     devices = [line.split()[0] for line in lines]
     return devices
+
+
+def get_devices():
+    result = subprocess.run(["adb", "devices"], capture_output=True, text=True)
+    return split_get_devices(result.stdout)
 
 
 def select_device(devices, allow_all=False):
