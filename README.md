@@ -51,9 +51,16 @@ sadb r [ANY ADB COMMAND]
     - Run an adb command on a device
 ```
 
-# Add it to your terminal profile!
+# Make sure it's easily accessible!
+
+You can add it to your terminal profile by creating an alias:
 ```
 ...
 alias sadb='python3 ~/Scripts/sadb/sadb.py'
 ...
+```
+
+Or you could add it to your PATH variable:
+```
+export PATH="~/Scripts/sadb/sadb.py:$PATH"
 ```

@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+# Created by:   Seamus Sloan
+# Last Edited:  July 10, 2023
+
 import os
 import sys
 
