@@ -202,13 +202,15 @@ def parse_args():
     screenshot_parser = subparsers.add_parser(
         "screenshot", help="Take a screenshot of a device")
     screenshot_parser.add_argument(
-        "-f", "--filename", help="The name of the file to save the screenshot as (default: screenshot.png)")
+        "-f", "--filename", 
+        help="The name of the file to save the screenshot as (default: screenshot.png)")
 
     # Record
     record_parser = subparsers.add_parser(
         "record", help="Record the screen of a device (Press CTRL-C to stop recording)")
     record_parser.add_argument(
-        "-f", "--filename", help="The name of the file to save the screen recording as (default: video.mp4)")
+        "-f", "--filename", 
+        help="The name of the file to save the screen recording as (default: video.mp4)")
 
     # WiFi
     wifi_parser = subparsers.add_parser(
