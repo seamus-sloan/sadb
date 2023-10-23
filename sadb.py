@@ -315,7 +315,6 @@ def main():
             screenshot(device, args.filename)
 
         elif args.command == "record":
-            print(args.filename)
             device = select_device(devices)
             if device is None:
                 return
