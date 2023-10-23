@@ -8,6 +8,7 @@
 
 import argparse
 import sys
+import os
 import subprocess
 import time
 
@@ -130,7 +131,7 @@ def record(device, filename):
     """Run [adb shell screenrecord video.mp4] to perform a screen record"""
     if not filename:
         filename = "video.mp4"
-    remote_path = "/data/local/tmp/screenrecord.mp4"
+    remote_path = f"/data/local/tmp/{filename}"
 
     cmd = ["adb", "-s", device, "shell", f"screenrecord {remote_path}"]
     proc = subprocess.Popen(cmd)
@@ -143,15 +144,19 @@ def record(device, filename):
     except KeyboardInterrupt:
         proc.terminate()
 
+    print("\nWaiting for recording to save to device...\n")
+    time.sleep(5)
+
     cmd = ["adb", "-s", device, "pull", remote_path, filename]
     result = subprocess.run(cmd)
 
     if result.returncode == 0:
-        print(f"Screen recording saved to {filename}")
+        print(f"Success! Screen recording saved to {os.getcwd()}/{filename}")
 
-    cmd = ["adb", "-s", device, "shell", f"rm {remote_path}"]
-    subprocess.run(cmd)
-
+    delete = input("\nDelete video from device? (Y/n): ")
+    if delete.lower() == 'y':
+        cmd = ["adb", "-s", device, "shell", f"rm {remote_path}"]
+        subprocess.run(cmd)
 
 
 def wifi(device):
