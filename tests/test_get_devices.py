@@ -4,8 +4,8 @@
 # Last Edited:  July 10, 2023
 
 import sys
-from sadb import split_get_devices
 sys.path.append("..")
+from sadb import split_get_devices
 
 def test_get_devices_returns_correct_three_devices(testDevices):
     devices = split_get_devices(testDevices(3))

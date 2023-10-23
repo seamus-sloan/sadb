@@ -6,10 +6,9 @@
 import sys
 from unittest.mock import ANY, MagicMock, call, mock_open, patch
 from conftest import DEVICE_IDS
+sys.path.append(".")
 from sadb import stop, start, clear, install, uninstall
 from sadb import scrcpy, get_ip, screenshot, record, wifi, search
-
-sys.path.append(".")
 
 TEST_APK = "myApp.apk"
 TEST_PACKAGE = "com.example.app"
