@@ -1,4 +1,7 @@
+"""Module for controlling multiple android devices at once with adb"""
 #!/usr/bin/python3
+
+#pylint: disable=subprocess-run-check, unspecified-encoding
 
 # Created by:   Seamus Sloan
 # Last Edited:  July 10, 2023

@@ -1,4 +1,7 @@
+"""Test all functions are sending the correct commands"""
 #!/usr/bin/python3
+
+#pylint: disable=missing-function-docstring, wrong-import-position
 
 # Created by:   Seamus Sloan
 # Last Edited:  July 10, 2023
