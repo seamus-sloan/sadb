@@ -16,7 +16,7 @@ def split_get_devices(result):
 
 
 def get_devices():
-    result = subprocess.run(["adb", "devices"], capture_output=True, text=True)
+    result = subprocess.run(["adb", "devices"], capture_output=True, text=True, check=False)
     return split_get_devices(result.stdout)
 
 
@@ -114,7 +114,7 @@ def screenshot(device, filename):
 def record(device, filename):
     if not filename:
         filename = "video.mp4"
-    remote_path = "/sdcard/screenrecord.mp4"
+    remote_path = "/data/local/tmp/screenrecord.mp4"
 
     cmd = ["adb", "-s", device, "shell", f"screenrecord {remote_path}"]
     proc = subprocess.Popen(cmd)
@@ -135,6 +135,7 @@ def record(device, filename):
 
     cmd = ["adb", "-s", device, "shell", f"rm {remote_path}"]
     subprocess.run(cmd)
+
 
 
 def wifi(device):
@@ -295,6 +296,7 @@ def main():
             screenshot(device, args.filename)
 
         elif args.command == "record":
+            print(args.filename)
             device = select_device(devices)
             if device is None:
                 return

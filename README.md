@@ -39,9 +39,9 @@ sadb scrcpy
     - Start scrcpy on a device
 sadb ip 
     - Get the selected device's IP address
-sadb screenshot myScreenshot.png 
+sadb screenshot -f myScreenshot.png 
     - Take a screenshot of a device
-sadb record myVideo.mp4 
+sadb record -f myVideo.mp4 
     - Record the screen of a device (Press CTRL-C to stop recording)
 sadb wifi 
     - Connect to a device via WiFi
