@@ -92,7 +92,7 @@ def test_screenshot_custom_name():
 
 def test_record_custom_name():
     filename = "custom.mp4"
-    remote_path = "/sdcard/screenrecord.mp4"
+    remote_path = "/data/local/tmp/screenrecord.mp4"
 
     mock_proc = MagicMock()
     with patch("subprocess.Popen", return_value=mock_proc) as mock_popen, \
@@ -109,7 +109,7 @@ def test_record_custom_name():
 
 def test_record_default_name():
     filename = "video.mp4"
-    remote_path = "/sdcard/screenrecord.mp4"
+    remote_path = "/data/local/tmp/screenrecord.mp4"
 
     mock_proc = MagicMock()
     with patch("subprocess.Popen", return_value=mock_proc) as mock_popen, \
