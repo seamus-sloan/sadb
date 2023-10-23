@@ -4,12 +4,9 @@
 # Last Edited:  July 10, 2023
 
 
-import os
 import sys
-sys.path.append("..")
-
 from sadb import select_device
-
+sys.path.append("..")
 
 def test_select_one_device(monkeypatch, testDeviceList):
     monkeypatch.setattr('builtins.input', lambda _: 1)

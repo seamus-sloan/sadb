@@ -3,15 +3,13 @@
 # Created by:   Seamus Sloan
 # Last Edited:  July 10, 2023
 
-
-from unittest.mock import ANY, MagicMock, call, mock_open, patch
 import sys
-sys.path.append(".")
-
+from unittest.mock import ANY, MagicMock, call, mock_open, patch
+from conftest import DEVICE_IDS
 from sadb import stop, start, clear, install, uninstall
 from sadb import scrcpy, get_ip, screenshot, record, wifi, search
-from conftest import DEVICE_IDS
 
+sys.path.append(".")
 
 TEST_APK = "myApp.apk"
 TEST_PACKAGE = "com.example.app"
