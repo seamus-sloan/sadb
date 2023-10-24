@@ -1,26 +1,33 @@
+"""Module for controlling multiple android devices at once with adb"""
 #!/usr/bin/python3
+
+#pylint: disable=subprocess-run-check, unspecified-encoding
 
 # Created by:   Seamus Sloan
 # Last Edited:  July 10, 2023
 
 import argparse
 import sys
+import os
 import subprocess
 import time
 
 
 def split_get_devices(result):
+    """Split [adb devices] to gather each device's serial number"""
     lines = result.strip().split("\n")[1:]
     devices = [line.split()[0] for line in lines]
     return devices
 
 
 def get_devices():
+    """Run [adb devices] to get all connected devices"""
     result = subprocess.run(["adb", "devices"], capture_output=True, text=True, check=False)
     return split_get_devices(result.stdout)
 
 
 def select_device(devices, allow_all=False):
+    """Allow the user to select a connected device or use the only device connected"""
     # If there are no devices found...
     if len(devices) == 0:
         print("No devices found")
@@ -51,6 +58,7 @@ def select_device(devices, allow_all=False):
 
 
 def call_function_on_devices(selected_devices, func, *args):
+    """Run the command on the selected device(s)"""
     if isinstance(selected_devices, list):
         for device in selected_devices:
             func(device, *args)
@@ -59,11 +67,13 @@ def call_function_on_devices(selected_devices, func, *args):
 
 
 def stop(device, package_name):
+    """Run [adb shell am force-stop com.package.name] to stop a process"""
     cmd = ["adb", "-s", device, "shell", "am", "force-stop", package_name]
     subprocess.run(cmd)
 
 
 def start(device, package_name):
+    """Start a package using adb shell monkey and the intent launcher"""
     cmd = ["adb", "-s", device, "shell", "monkey", "-p",
            package_name, "-c", "android.intent.category.LAUNCHER", "1"]
     with open("/dev/null", "w") as devnull:
@@ -71,26 +81,31 @@ def start(device, package_name):
 
 
 def clear(device, package_name):
+    """Run [adb shell pm clear com.package.name] to clear storage"""
     cmd = ["adb", "-s", device, "shell", "pm", "clear", package_name]
     subprocess.run(cmd)
 
 
 def install(device, apk):
+    """Run [adb install your.apk] to install an APK"""
     cmd = ["adb", "-s", device, "install", apk]
     subprocess.run(cmd)
 
 
 def uninstall(device, package_name):
+    """Run [adb uninstall your.package.name] to uninstall a package"""
     cmd = ["adb", "-s", device, "uninstall", package_name]
     subprocess.run(cmd)
 
 
 def scrcpy(device):
+    """Run [scrcpy] to start screen copy"""
     cmd = ["scrcpy", "-s", device]
     subprocess.run(cmd)
 
 
 def get_ip(device):
+    """Run [adb shell ip addr show wlan0] to get the device's IP"""
     cmd = ["adb", "-s", device, "shell", "ip", "addr", "show", "wlan0"]
     result = subprocess.run(cmd, capture_output=True, text=True)
     lines = result.stdout.strip().split("\n")
@@ -102,6 +117,7 @@ def get_ip(device):
 
 
 def screenshot(device, filename):
+    """Run [adb exec-out screencap -p] to capture a screenshot"""
     if not filename:
         filename = "screenshot.png"
     cmd = ["adb", "-s", device, "exec-out", "screencap", "-p"]
@@ -112,9 +128,10 @@ def screenshot(device, filename):
 
 
 def record(device, filename):
+    """Run [adb shell screenrecord video.mp4] to perform a screen record"""
     if not filename:
         filename = "video.mp4"
-    remote_path = "/data/local/tmp/screenrecord.mp4"
+    remote_path = f"/data/local/tmp/{filename}"
 
     cmd = ["adb", "-s", device, "shell", f"screenrecord {remote_path}"]
     proc = subprocess.Popen(cmd)
@@ -127,18 +144,23 @@ def record(device, filename):
     except KeyboardInterrupt:
         proc.terminate()
 
+    print("\nWaiting for recording to save to device...\n")
+    time.sleep(5)
+
     cmd = ["adb", "-s", device, "pull", remote_path, filename]
     result = subprocess.run(cmd)
 
     if result.returncode == 0:
-        print(f"Screen recording saved to {filename}")
+        print(f"Success! Screen recording saved to {os.getcwd()}/{filename}")
 
-    cmd = ["adb", "-s", device, "shell", f"rm {remote_path}"]
-    subprocess.run(cmd)
-
+    delete = input("\nDelete video from device? (Y/n): ")
+    if delete.lower() == 'y':
+        cmd = ["adb", "-s", device, "shell", f"rm {remote_path}"]
+        subprocess.run(cmd)
 
 
 def wifi(device):
+    """Start adb server in tcpip and connect to it via IP address"""
     ip_address = get_ip(device)
 
     if not ip_address:
@@ -156,12 +178,14 @@ def wifi(device):
 
 
 def search(device, search_term):
+    """Search all packages for entered word"""
     cmd = ["adb", "-s", device, "shell", "pm",
            "list", "packages", "|", "grep", search_term]
     subprocess.run(cmd)
 
 
 def parse_args():
+    """Parse all arguments with argparse"""
     parser = argparse.ArgumentParser(
         description="A wrapper for adb on multiple devices")
     subparsers = parser.add_subparsers(dest="command")
@@ -193,7 +217,7 @@ def parse_args():
     uninstall_parser.add_argument(
         "package_name", help="The name of the package to uninstall")
 
-    # Screencopy
+    # Screen Copy
     subparsers.add_parser("scrcpy", help="Start scrcpy on a device")
 
     # IP Address
@@ -214,8 +238,7 @@ def parse_args():
         help="The name of the file to save the screen recording as (default: video.mp4)")
 
     # WiFi
-    wifi_parser = subparsers.add_parser(
-        "wifi", help="Connect to a device via WiFi")
+    subparsers.add_parser("wifi", help="Connect to a device via WiFi")
 
     # Search
     search_parser = subparsers.add_parser(
@@ -223,7 +246,7 @@ def parse_args():
     search_parser.add_argument(
         "search_term", help="The name of the package to search for")
 
-    # R (Unwrapped)
+    # R (Raw)
     r_parser = subparsers.add_parser("r", help="Run an adb command")
     r_parser.add_argument(
         "args", help="Any argument you would normally pass through adb", nargs=argparse.REMAINDER)
@@ -238,6 +261,7 @@ def parse_args():
 
 
 def main():
+    """Main function"""
     try:
         args = parse_args()
         devices = get_devices()
@@ -296,7 +320,6 @@ def main():
             screenshot(device, args.filename)
 
         elif args.command == "record":
-            print(args.filename)
             device = select_device(devices)
             if device is None:
                 return
