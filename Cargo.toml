@@ -12,7 +12,7 @@ name = "sadb"
 path = "src/lib.rs"
 
 [dependencies]
-clap = { version = "4.0", features = ["derive"] }
+clap = { version = ">=3.2, <5.0", features = ["derive"] }
 tokio = { version = "1.0", features = ["full"] }
 anyhow = "1.0"
 dialoguer = "0.11"
