@@ -8,7 +8,7 @@ fn test_integration_device_parsing() {
                       R5CRC0123456789\tdevice\n\
                       R5CRC9876543210\toffline\n\
                       unauthorized_device\tunauthorized\n";
-    
+
     let devices = parse_devices_output(adb_output).unwrap();
     assert_eq!(devices.len(), 2);
     assert!(devices.contains(&"emulator-5554".to_string()));
@@ -44,7 +44,7 @@ fn test_integration_ip_parsing() {
 fn test_device_selection_clone() {
     let original = DeviceSelection::Single("test-device".to_string());
     let cloned = original.clone();
-    
+
     match (original, cloned) {
         (DeviceSelection::Single(orig), DeviceSelection::Single(clone)) => {
             assert_eq!(orig, clone);
@@ -57,10 +57,10 @@ fn test_device_selection_clone() {
 fn test_device_selection_debug() {
     let single = DeviceSelection::Single("test".to_string());
     let all = DeviceSelection::All(vec!["dev1".to_string(), "dev2".to_string()]);
-    
+
     let single_debug = format!("{:?}", single);
     let all_debug = format!("{:?}", all);
-    
+
     assert!(single_debug.contains("Single"));
     assert!(single_debug.contains("test"));
     assert!(all_debug.contains("All"));
