@@ -1,4 +1,4 @@
-use anyhow::{Result, Context};
+use anyhow::{Context, Result};
 use dialoguer::{theme::ColorfulTheme, Select};
 use std::process::Command;
 
@@ -18,10 +18,13 @@ pub fn get_devices() -> Result<Vec<String>> {
         return Err(anyhow::anyhow!("adb devices command failed"));
     }
 
-    let stdout = String::from_utf8(output.stdout)
-        .context("Failed to parse adb devices output")?;
+    let stdout = String::from_utf8(output.stdout).context("Failed to parse adb devices output")?;
 
-    let devices: Vec<String> = stdout
+    parse_devices_output(&stdout)
+}
+
+pub fn parse_devices_output(output: &str) -> Result<Vec<String>> {
+    let devices: Vec<String> = output
         .lines()
         .skip(1) // Skip the "List of devices attached" header
         .filter_map(|line| {
@@ -69,14 +72,13 @@ pub fn select_device(devices: &[String], allow_all: bool) -> Result<Option<Devic
 pub fn execute_command_on_device(device: &str, cmd_args: &[&str]) -> Result<()> {
     let mut cmd = Command::new("adb");
     cmd.args(["-s", device]).args(cmd_args);
-    
-    let status = cmd.status()
-        .context("Failed to execute adb command")?;
-    
+
+    let status = cmd.status().context("Failed to execute adb command")?;
+
     if !status.success() {
         eprintln!("Command failed on device {}", device);
     }
-    
+
     Ok(())
 }
 
@@ -92,4 +94,66 @@ pub fn execute_command_on_devices(selection: DeviceSelection, cmd_args: &[&str])
         }
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_devices_output_empty() {
+        let output = "List of devices attached\n";
+        let devices = parse_devices_output(output).unwrap();
+        assert_eq!(devices.len(), 0);
+    }
+
+    #[test]
+    fn test_parse_devices_output_single_device() {
+        let output = "List of devices attached\nemulator-5554\tdevice\n";
+        let devices = parse_devices_output(output).unwrap();
+        assert_eq!(devices.len(), 1);
+        assert_eq!(devices[0], "emulator-5554");
+    }
+
+    #[test]
+    fn test_parse_devices_output_multiple_devices() {
+        let output = "List of devices attached\n\
+                      emulator-5554\tdevice\n\
+                      R5CRC123456\tdevice\n\
+                      R5CRC789012\toffline\n";
+        let devices = parse_devices_output(output).unwrap();
+        assert_eq!(devices.len(), 2); // offline devices should be excluded
+        assert_eq!(devices[0], "emulator-5554");
+        assert_eq!(devices[1], "R5CRC123456");
+    }
+
+    #[test]
+    fn test_parse_devices_output_with_unauthorized() {
+        let output = "List of devices attached\n\
+                      emulator-5554\tdevice\n\
+                      R5CRC123456\tunauthorized\n";
+        let devices = parse_devices_output(output).unwrap();
+        assert_eq!(devices.len(), 1); // unauthorized devices should be excluded
+        assert_eq!(devices[0], "emulator-5554");
+    }
+
+    #[test]
+    fn test_device_selection_enum() {
+        let single = DeviceSelection::Single("device1".to_string());
+        let all = DeviceSelection::All(vec!["device1".to_string(), "device2".to_string()]);
+
+        match single {
+            DeviceSelection::Single(device) => assert_eq!(device, "device1"),
+            _ => panic!("Expected Single variant"),
+        }
+
+        match all {
+            DeviceSelection::All(devices) => {
+                assert_eq!(devices.len(), 2);
+                assert_eq!(devices[0], "device1");
+                assert_eq!(devices[1], "device2");
+            }
+            _ => panic!("Expected All variant"),
+        }
+    }
 }

@@ -1,10 +1,10 @@
-mod device;
 mod commands;
+mod device;
 
+use anyhow::{Context, Result};
 use clap::{Parser, Subcommand};
-use anyhow::{Result, Context};
-use device::{get_devices, select_device, DeviceSelection};
 use commands::*;
+use device::{get_devices, select_device, DeviceSelection};
 
 #[derive(Parser)]
 #[command(name = "sadb")]

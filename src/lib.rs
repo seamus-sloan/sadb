@@ -1,6 +1,6 @@
-pub mod device;
 pub mod commands;
+pub mod device;
 
 // Re-export main functionality for testing
-pub use device::*;
 pub use commands::*;
+pub use device::*;
