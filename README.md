@@ -15,7 +15,7 @@ Whether you're running `adb install com.example.app` over and over again on mult
 
 
 # What do I need to use this?
-- [`python3.7+`](https://www.python.org/downloads/)
+- [`Rust`](https://www.rust-lang.org/tools/install) (for building from source)
 - [`adb`](https://developer.android.com/studio/releases/platform-tools)
   - If you don't have [adb installed with Android Studio](https://developer.android.com/studio), then you can always download [the platform tools as a standalone](https://developer.android.com/studio/releases/platform-tools). 
 - [`scrcpy`](https://github.com/Genymobile/scrcpy)
@@ -51,16 +51,33 @@ sadb r [ANY ADB COMMAND]
     - Run an adb command on a device
 ```
 
-# Make sure it's easily accessible!
+# Building and Installing
 
-You can add it to your terminal profile by creating an alias:
-```
-...
-alias sadb='python3 ~/Scripts/sadb/sadb.py'
-...
+## Building from source
+```bash
+git clone https://github.com/seamus-sloan/sadb.git
+cd sadb
+cargo build --release
 ```
 
-Or you could add it to your PATH variable:
+The binary will be available at `target/release/sadb`.
+
+## Installation Options
+
+### Option 1: Copy to PATH
+```bash
+# Copy the binary to a location in your PATH
+sudo cp target/release/sadb /usr/local/bin/
 ```
-export PATH="~/Scripts/sadb/sadb.py:$PATH"
+
+### Option 2: Create an alias
+Add this to your shell profile (e.g., `~/.zshrc`, `~/.bash_profile`):
+```bash
+alias sadb='/path/to/your/sadb/target/release/sadb'
+```
+
+### Option 3: Add to PATH
+Add the binary location to your PATH:
+```bash
+export PATH="/path/to/your/sadb/target/release:$PATH"
 ```
