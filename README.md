@@ -64,19 +64,25 @@ The binary will be available at `target/release/sadb`.
 
 ## Installation Options
 
-### Option 1: Copy to PATH
+### Option 1: EZ Mode
+Build and install directly to your `/.cargo/bin/`
+```bash
+cargo install --path .
+```
+
+### Option 2: Copy to PATH
 ```bash
 # Copy the binary to a location in your PATH
 sudo cp target/release/sadb /usr/local/bin/
 ```
 
-### Option 2: Create an alias
+### Option 3: Create an alias
 Add this to your shell profile (e.g., `~/.zshrc`, `~/.bash_profile`):
 ```bash
 alias sadb='/path/to/your/sadb/target/release/sadb'
 ```
 
-### Option 3: Add to PATH
+### Option 4: Add to PATH
 Add the binary location to your PATH:
 ```bash
 export PATH="/path/to/your/sadb/target/release:$PATH"
