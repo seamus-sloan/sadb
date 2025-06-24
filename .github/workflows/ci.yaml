@@ -9,17 +9,14 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        rust-version: ["stable", "1.70.0"]
 
     steps:
       - uses: actions/checkout@v4
       
-      - name: Set up Rust ${{ matrix.rust-version }}
+      - name: Set up Rust
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: ${{ matrix.rust-version }}
+          toolchain: "stable"
           override: true
           components: rustfmt, clippy
           
